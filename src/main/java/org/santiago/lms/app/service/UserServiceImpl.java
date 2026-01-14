@@ -55,6 +55,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void remove(Long id)  {
+        if(findById(id).isEmpty()){
+            throw new RuntimeException();
+        }
         userRepository.deleteById(id);
     }
 
@@ -62,6 +65,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void disableUser(Long id) {
+        if(findById(id).isEmpty()){
+            throw new RuntimeException();
+        }
         userRepository.disableUser(id);
     }
 }
