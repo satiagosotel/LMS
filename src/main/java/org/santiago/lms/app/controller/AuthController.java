@@ -1,0 +1,30 @@
+package org.santiago.lms.app.controller;
+
+import jakarta.validation.Valid;
+import org.santiago.lms.app.dto.request.AuthRequest;
+import org.santiago.lms.app.dto.response.*;
+import org.santiago.lms.app.service.AuthService;
+import org.santiago.lms.app.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
+
+    private AuthService authService;
+
+    public AuthController(AuthService authService,UserService userService) {
+        this.authService = authService;
+    }
+
+//    @PostMapping("/register")
+//    public ResponseEntity<JwtResponse> register(@Valid @RequestBody AuthRequest request) {
+//        return ResponseEntity.ok(authService.register(request));
+//    }
+
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(@Valid @RequestBody AuthRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
+}
