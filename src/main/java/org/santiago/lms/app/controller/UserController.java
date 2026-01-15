@@ -48,18 +48,14 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<?> saveUser(@RequestBody UserRequest request){
-        try{
-            User u = new User();
-            u.setUsername(request.getUsername());
-            u.setPassword(request.getPassword());
-            u.setEmail(request.getEmail());
-            setRoles(request, u);
-            userService.save(u);
+        User u = new User();
+        u.setUsername(request.getUsername());
+        u.setPassword(request.getPassword());
+        u.setEmail(request.getEmail());
+        setRoles(request, u);
+        userService.save(u);
 
-            return respuestaExitosa("EXITO","Operacion exitosa!", HttpStatus.OK);
-        } catch (Exception e){
-            return error();
-        }
+        return respuestaExitosa("EXITO","Operacion exitosa!", HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
