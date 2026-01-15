@@ -1,1 +1,2 @@
 # LMS
+Learning Management System
