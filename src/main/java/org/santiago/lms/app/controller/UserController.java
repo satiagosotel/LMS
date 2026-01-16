@@ -1,16 +1,14 @@
 package org.santiago.lms.app.controller;
 
-import org.jspecify.annotations.NonNull;
 import org.santiago.lms.app.dto.request.UserRequest;
+import org.santiago.lms.app.dto.response.ApiResponse;
 import org.santiago.lms.app.models.Role;
 import org.santiago.lms.app.models.User;
 import org.santiago.lms.app.service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -25,85 +23,53 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllUsers() {
-        try{
-            List<User> users = userService.findAll();
-            return ResponseEntity.ok(users);
-        }catch (Exception e){
-            return error();
-        }
+    public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
+        List<User> users = userService.findAll();
+        return ResponseEntity.ok(ApiResponse.success(users));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        try{
-            return ResponseEntity.ok(userService.findById(id).orElseThrow());
-        } catch (Exception e){
-            return error();
-        }
+    public ResponseEntity<ApiResponse<User>> getById(@PathVariable Long id) {
+        User user = userService.findById(id).orElseThrow();
+        return ResponseEntity.ok(ApiResponse.success(user));
     }
 
-
-
-
     @PostMapping("/create")
-    public ResponseEntity<?> saveUser(@RequestBody UserRequest request){
-        try{
-            User u = new User();
-            u.setUsername(request.getUsername());
-            u.setPassword(request.getPassword());
-            u.setEmail(request.getEmail());
-            setRoles(request, u);
-            userService.save(u);
+    public ResponseEntity<ApiResponse<User>> saveUser(@RequestBody UserRequest request){
+        User u = new User();
+        u.setUsername(request.getUsername());
+        u.setPassword(request.getPassword());
+        u.setEmail(request.getEmail());
+        setRoles(request, u);
 
-            return respuestaExitosa("EXITO","Operacion exitosa!", HttpStatus.OK);
-        } catch (Exception e){
-            return error();
-        }
+        return ResponseEntity.ok(ApiResponse.success(userService.save(u)));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id,
+    public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable Long id,
                                                    @RequestBody UserRequest request) {
-        try{
-            User u = new User();
-            u.setId(id);
-            u.setUsername(request.getUsername());
-            u.setPassword(request.getPassword());
-            u.setEmail(request.getEmail());
-            setRoles(request,u);
 
-            userService.save(u);
+        User u = new User();
+        u.setId(id);
+        u.setUsername(request.getUsername());
+        u.setPassword(request.getPassword());
+        u.setEmail(request.getEmail());
+        setRoles(request,u);
 
-            return respuestaExitosa("EXITO","Operacion exitosa!", HttpStatus.OK);
-
-        }catch (Exception e){
-            return error();
-        }
+        return ResponseEntity.ok(ApiResponse.success(userService.save(u)));
     }
-
-
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        try{
-            userService.remove(id);
-            return respuestaExitosa("EXITO","Operacion exitosa!", HttpStatus.OK);
-        }
-        catch (Exception e){
-            return error();
-        }
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable Long id) {
+        userService.remove(id);
+        return ResponseEntity.ok(ApiResponse.success("Usuario eliminado correctamente"));
     }
 
     @PatchMapping("/disable/{id}")
-    public ResponseEntity<?> disableUser(@PathVariable Long id) {
-        try{
-            userService.disableUser(id);
-            return respuestaExitosa("EXITO","Operacion exitosa!", HttpStatus.OK);
-        } catch (Exception e) {
-            return error();
-        }
+    public ResponseEntity<ApiResponse<String>> disableUser(@PathVariable Long id) {
+        userService.disableUser(id);
+        return ResponseEntity.ok(ApiResponse.success("Usuario deshabilitado correctamente"));
     }
 
 
@@ -111,30 +77,10 @@ public class UserController {
         Metodos privados para la clase.
      */
     private static void setRoles(UserRequest request, User u) {
-        Set<Role> roles = new HashSet<>(request.getRoles());
-        u.setRoles(roles);
+        if(request.getRoles() != null){
+            Set<Role> roles = new HashSet<>(request.getRoles());
+            u.setRoles(roles);
+        }
     }
 
-
-    private static @NonNull ResponseEntity<Map<String, Object>> error() {
-        Map<String, Object> errorBody = new HashMap<>();
-        errorBody.put("message", "Error interno del servidor");
-        errorBody.put("status","ERROR");
-        errorBody.put("timestamp", LocalDateTime.now());
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(errorBody);
-    }
-
-
-    private static @NonNull ResponseEntity<Map<String, String>> respuestaExitosa(String status, String message, HttpStatus httpStatus) {
-        Map<String,String> response = new HashMap<>();
-        response.put("message",message);
-        response.put("status",status);
-
-        return ResponseEntity
-                .status(httpStatus)
-                .body(response);
-    }
 }
