@@ -18,9 +18,9 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UsuarioException.class)
-    public ResponseEntity<ApiResponse<String>> handleUsuarioException(UsuarioException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(LMSException.class)
+    public ResponseEntity<ApiResponse<String>> handleUsuarioException(LMSException ex){
+        return ResponseEntity.status(ex.getStatus())
                 .body(
                         ApiResponse.error(ex.getMessage())
                 );

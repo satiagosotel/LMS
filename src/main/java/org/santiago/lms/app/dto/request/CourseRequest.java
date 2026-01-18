@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class CourseRequest {
-    @NotBlank
+    @NotBlank(message = "El título es obligatorio")
     private String title;
 
     private String description;

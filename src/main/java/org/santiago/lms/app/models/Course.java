@@ -22,10 +22,6 @@ public class Course {
     @Column(length = 1000)
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "instructor_id")
-    private User instructor;
-
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("orderIndex ASC")
     private List<Lesson> lessons = new ArrayList<>();
