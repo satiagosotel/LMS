@@ -5,10 +5,10 @@ import org.santiago.lms.app.models.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface Service {
-    User save(User user);
+public interface Service<T> {
+    T save(T t);
     void remove(Long id);
-    List<User> findAll() ;
-    Optional<User> findById(Long id);
+    List<T> findAll() ;
+    Optional<T> findById(Long id);
 
 }

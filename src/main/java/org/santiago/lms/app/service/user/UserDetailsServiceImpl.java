@@ -1,4 +1,4 @@
-package org.santiago.lms.app.service;
+package org.santiago.lms.app.service.user;
 
 import org.santiago.lms.app.models.User;
 import org.santiago.lms.app.repository.UserRepository;

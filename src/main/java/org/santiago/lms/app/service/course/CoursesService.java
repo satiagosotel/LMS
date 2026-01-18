@@ -1,10 +1,8 @@
-package org.santiago.lms.app.service.courses;
+package org.santiago.lms.app.service.course;
 
-import org.santiago.lms.app.models.User;
+import org.santiago.lms.app.models.Course;
+import org.santiago.lms.app.service.Service;
 
-import java.util.List;
-import java.util.Optional;
-
-public interface CoursesService {
+public interface CoursesService extends Service<Course> {
 
 }

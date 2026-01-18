@@ -1,13 +1,9 @@
-package org.santiago.lms.app.service;
+package org.santiago.lms.app.service.auth;
 
 import org.santiago.lms.app.dto.request.AuthRequest;
-import org.santiago.lms.app.dto.response.AuthResponse;
 import org.santiago.lms.app.dto.response.JwtResponse;
-import org.santiago.lms.app.models.Role;
-import org.santiago.lms.app.models.User;
 import org.santiago.lms.app.repository.UserRepository;
 import org.santiago.lms.app.security.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;

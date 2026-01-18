@@ -3,8 +3,8 @@ package org.santiago.lms.app.controller;
 import jakarta.validation.Valid;
 import org.santiago.lms.app.dto.request.AuthRequest;
 import org.santiago.lms.app.dto.response.*;
-import org.santiago.lms.app.service.AuthService;
-import org.santiago.lms.app.service.UserService;
+import org.santiago.lms.app.service.auth.AuthService;
+import org.santiago.lms.app.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

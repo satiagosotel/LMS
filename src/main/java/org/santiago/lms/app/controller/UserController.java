@@ -4,7 +4,7 @@ import org.santiago.lms.app.dto.request.UserRequest;
 import org.santiago.lms.app.dto.response.ApiResponse;
 import org.santiago.lms.app.models.Role;
 import org.santiago.lms.app.models.User;
-import org.santiago.lms.app.service.UserService;
+import org.santiago.lms.app.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
