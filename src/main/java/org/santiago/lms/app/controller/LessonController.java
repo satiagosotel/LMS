@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/lessons")
-@PreAuthorize("hasRole('ADMIN')")
 public class LessonController {
 
     private final LessonService lessonService;
@@ -36,7 +35,7 @@ public class LessonController {
         Lesson lesson = lessonService.findById(id).orElseThrow();
         return ResponseEntity.ok(ApiResponse.success(lesson));
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Lesson>> saveLesson(@RequestBody LessonRequest request) {
         Lesson lesson = new Lesson();
@@ -49,6 +48,7 @@ public class LessonController {
         return ResponseEntity.ok(ApiResponse.success(lessonService.save(lesson)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<ApiResponse<Lesson>> updateLesson(@PathVariable Long id,
                                                             @RequestBody LessonRequest request) {
@@ -63,6 +63,7 @@ public class LessonController {
         return ResponseEntity.ok(ApiResponse.success(lessonService.save(lesson)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteLesson(@PathVariable Long id) {
         lessonService.remove(id);
