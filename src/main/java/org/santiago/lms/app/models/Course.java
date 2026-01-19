@@ -1,4 +1,5 @@
 package org.santiago.lms.app.models;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,6 +25,7 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("orderIndex ASC")
+    @JsonManagedReference
     private List<Lesson> lessons = new ArrayList<>();
 
     @Column(nullable = false)
