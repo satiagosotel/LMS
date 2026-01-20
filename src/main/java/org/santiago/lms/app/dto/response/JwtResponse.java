@@ -9,7 +9,5 @@ import java.util.Set;
 @AllArgsConstructor
 public class JwtResponse {
     private String token;
-    private String type = "Bearer";
-    private String username;
-    private Set<String> roles;
+    private Long exp;
 }

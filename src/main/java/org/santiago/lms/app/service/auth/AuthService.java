@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,17 +18,12 @@ public class AuthService {
 
     private AuthenticationManager authenticationManager;
 
-    private UserRepository userRepository;
-
-    private PasswordEncoder passwordEncoder;
 
     private JwtTokenProvider jwtTokenProvider;
 
 
     public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -36,11 +32,12 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-        String token = jwtTokenProvider.generateToken(authentication);
-        Set<String> roles = new HashSet<>();
-//        u.getRoles().forEach(r -> roles.add(r.toString()));
+        HashMap<String,Object> jwtTokenProviderResponse = jwtTokenProvider.generateToken(authentication);
 
-        return new JwtResponse(token, "Bearer", request.getUsername(), roles);
+        return new JwtResponse(
+                jwtTokenProviderResponse.get("token").toString(),
+                (Long)jwtTokenProviderResponse.get("exp")
+        );
     }
 
 //    public JwtResponse register(AuthRequest request) {
