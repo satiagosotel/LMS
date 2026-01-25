@@ -72,15 +72,6 @@ public class    UserServiceImpl implements UserService {
     @Override
     public User save(User userIn){
         User userResponse;
-        // Validar que el username no este en uso
-        if(userRepository.findUserByUsername(userIn.getUsername()).isPresent()) {
-            throw new LMSException("El username '" + userIn.getUsername() + "' ya está en uso",BAD_REQUEST);
-        }
-
-        // Validar que el correo no este en uso
-        if(userRepository.findUserByEmail(userIn.getEmail()).isPresent()) {
-            throw new LMSException("El email '" + userIn.getEmail() + "' ya está en uso",BAD_REQUEST);
-        }
 
         if(userIn.getId() != null && userIn.getId() > 0){
             userResponse = findById(userIn.getId()).orElseThrow();
@@ -97,6 +88,17 @@ public class    UserServiceImpl implements UserService {
                 userResponse.setRoles(userIn.getRoles());
             }
         } else {
+
+            // Validar que el username no este en uso
+            if(userRepository.findUserByUsername(userIn.getUsername()).isPresent()) {
+                throw new LMSException("El username '" + userIn.getUsername() + "' ya está en uso",BAD_REQUEST);
+            }
+
+            // Validar que el correo no este en uso
+            if(userRepository.findUserByEmail(userIn.getEmail()).isPresent()) {
+                throw new LMSException("El email '" + userIn.getEmail() + "' ya está en uso",BAD_REQUEST);
+            }
+
             if(userIn.getUsername() == null || userIn.getUsername().isBlank()){
                 throw new LMSException("Debe ingresar el nombre de usuario",BAD_REQUEST);
             }
