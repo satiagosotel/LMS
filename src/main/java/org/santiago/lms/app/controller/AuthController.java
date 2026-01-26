@@ -18,11 +18,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<JwtResponse> register(@Valid @RequestBody AuthRequest request) {
-//        return ResponseEntity.ok(authService.register(request));
-//    }
-
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.login(request));

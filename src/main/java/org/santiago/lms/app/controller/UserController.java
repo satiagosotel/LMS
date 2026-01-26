@@ -2,8 +2,7 @@ package org.santiago.lms.app.controller;
 
 import org.santiago.lms.app.dto.request.UserRequest;
 import org.santiago.lms.app.dto.response.ApiResponse;
-import org.santiago.lms.app.models.Role;
-import org.santiago.lms.app.models.User;
+import org.santiago.lms.app.dto.response.UserResponse;
 import org.santiago.lms.app.service.user.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,40 +22,29 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<User>>> getAllUsers() {
-        List<User> users = userService.findAll();
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
+        List<UserResponse> users = userService.findAll();
         return ResponseEntity.ok(ApiResponse.success(users));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<User>> getById(@PathVariable Long id) {
-        User user = userService.findById(id).orElseThrow();
+    public ResponseEntity<ApiResponse<UserResponse>> getById(@PathVariable Long id) {
+        UserResponse user = userService.findById(id);
         return ResponseEntity.ok(ApiResponse.success(user));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<User>> saveUser(@RequestBody UserRequest request){
-        User u = new User();
-        u.setUsername(request.getUsername());
-        u.setPassword(request.getPassword());
-        u.setEmail(request.getEmail());
-        setRoles(request, u);
+    public ResponseEntity<ApiResponse<UserResponse>> saveUser(@RequestBody UserRequest request){
 
-        return ResponseEntity.ok(ApiResponse.success(userService.save(u)));
+
+        return ResponseEntity.ok(ApiResponse.success(userService.save(request,null)));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable Long id,
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable Long id,
                                                    @RequestBody UserRequest request) {
 
-        User u = new User();
-        u.setId(id);
-        u.setUsername(request.getUsername());
-        u.setPassword(request.getPassword());
-        u.setEmail(request.getEmail());
-        setRoles(request,u);
-
-        return ResponseEntity.ok(ApiResponse.success(userService.save(u)));
+        return ResponseEntity.ok(ApiResponse.success(userService.save(request,id)));
     }
 
 
@@ -72,15 +60,5 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Usuario deshabilitado correctamente"));
     }
 
-
-    /*
-        Metodos privados para la clase.
-     */
-    private static void setRoles(UserRequest request, User u) {
-        if(request.getRoles() != null){
-            Set<Role> roles = new HashSet<>(request.getRoles());
-            u.setRoles(roles);
-        }
-    }
 
 }

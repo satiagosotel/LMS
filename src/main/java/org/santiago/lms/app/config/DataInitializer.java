@@ -26,7 +26,7 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (userRepository.count() == 0) {
-            Role adminRole = roleRepository.findByName(Role.RoleName.ROLE_ADMIN)
+            Role adminRole = roleRepository.findByName(Role.RoleName.ROLE_ADMIN.toString())
                     .orElseGet(() -> {
                         Role role = new Role();
                         role.setName(Role.RoleName.ROLE_ADMIN);

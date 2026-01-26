@@ -2,37 +2,37 @@ package org.santiago.lms.app.service.auth;
 
 import org.santiago.lms.app.dto.request.AuthRequest;
 import org.santiago.lms.app.dto.response.JwtResponse;
+import org.santiago.lms.app.models.User;
 import org.santiago.lms.app.repository.UserRepository;
 import org.santiago.lms.app.security.JwtTokenProvider;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 public class AuthService {
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
-
-    private JwtTokenProvider jwtTokenProvider;
-
-
-    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
+    public AuthService(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
     }
 
     public JwtResponse login(AuthRequest request) {
-
-        Authentication authentication = authenticationManager.authenticate(
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-        HashMap<String,Object> jwtTokenProviderResponse = jwtTokenProvider.generateToken(authentication);
+
+        User user = userRepository.findUserByUsername(request.getUsername())
+                .orElseThrow(() -> new BadCredentialsException("Usuario no encontrado"));
+
+        HashMap<String,Object> jwtTokenProviderResponse = jwtTokenProvider.generateToken(user.getId(), user.getUsername());
 
         return new JwtResponse(
                 jwtTokenProviderResponse.get("token").toString(),
@@ -40,19 +40,4 @@ public class AuthService {
         );
     }
 
-//    public JwtResponse register(AuthRequest request) {
-//
-//        User u;
-//        if(userRepository.findUserByUsername(request.getUsername()).isPresent()){
-//            throw new RuntimeException("El usuario ya existe");
-//        }
-//        u = new User();
-//        u.setUsername(request.getUsername());
-//        u.setPassword(passwordEncoder.encode(request.getPassword()));
-//        u.setEmail(request.getEmail());
-//        u.setEnabled(true);
-//
-//
-//        userRepository.save(u);
-//    }
 }
