@@ -11,7 +11,5 @@ public class CourseResponse {
     private Long id;
     private String title;
     private String description;
-    private Page<Lesson> lessons;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

@@ -27,26 +27,19 @@ public class CoursesServiceImpl implements CoursesService {
     }
 
     public List<Course> findAll() {
-        List<Course> courses = this.courseRepository.findByActiveTrue();
+        List<Course> courses = (List<Course>)this.courseRepository.findAll();
         if(courses.isEmpty()){
             throw new LMSException(CURSOS_VACIOS, NOT_FOUND);
         }
         return courses;
     }
 
-    public Page<Course> findAll(Pageable pageable) {
-        Page<Course> courses = this.courseRepository.findByActiveTrue(pageable);
-        if(courses.isEmpty()){
-            throw new LMSException(CURSOS_VACIOS, NOT_FOUND);
-        }
-        return courses;
-    }
 
     public Optional<Course> findById(Long id) {
         Optional<Course> optUser =this.courseRepository.findById(id);
         if(optUser.isEmpty()){
             throw new LMSException(CURSO_NO_EXISTE,NOT_FOUND);
-        }
+        }        
         return optUser;
     }
 

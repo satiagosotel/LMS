@@ -1,5 +1,7 @@
 package org.santiago.lms.app.controller;
 
+import java.util.List;
+
 import org.santiago.lms.app.dto.request.CourseRequest;
 import org.santiago.lms.app.dto.response.ApiResponse;
 import org.santiago.lms.app.dto.response.CourseResponse;
@@ -22,14 +24,14 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<Page<Course>>> getAllCourses(Pageable pageable) {
-        Page<Course> courses = coursesService.findAll(pageable);
+    public ResponseEntity<ApiResponse<List<Course>>> getAllCourses() {
+        List<Course> courses = coursesService.findAll();
         return ResponseEntity.ok(ApiResponse.success(courses));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<CourseResponse>> getById(@PathVariable Long id, Pageable pageable) {
-        CourseResponse course = coursesService.findByIdWithPaginatedLessons(id, pageable);
+    public ResponseEntity<ApiResponse<Course>> getById(@PathVariable Long id) {
+        Course course = coursesService.findById(id).orElseThrow();
         return ResponseEntity.ok(ApiResponse.success(course));
     }
 
