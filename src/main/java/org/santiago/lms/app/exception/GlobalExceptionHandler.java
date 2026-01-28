@@ -3,6 +3,7 @@ package org.santiago.lms.app.exception;
 import org.santiago.lms.app.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -52,6 +53,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(
                         ApiResponse.error("Usuario deshabilitado")
+                );
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<String>> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        String mensaje = "Error de integridad de datos";
+
+        if (ex.getMessage() != null && ex.getMessage().contains("Duplicate entry")) {
+            mensaje = "El registro ya existe";
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(
+                        ApiResponse.error(mensaje)
                 );
     }
 
