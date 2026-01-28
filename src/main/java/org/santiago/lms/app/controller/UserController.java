@@ -3,7 +3,10 @@ package org.santiago.lms.app.controller;
 import org.santiago.lms.app.dto.request.UserRequest;
 import org.santiago.lms.app.dto.response.ApiResponse;
 import org.santiago.lms.app.dto.response.UserResponse;
+import org.santiago.lms.app.models.User;
 import org.santiago.lms.app.service.user.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +26,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
-        List<UserResponse> users = userService.findAll();
+    public ResponseEntity<ApiResponse<Page<User>>> getAllUsers(Pageable pageable) {
+        Page<User> users = userService.findAll(pageable);
         return ResponseEntity.ok(ApiResponse.success(users));
     }
 

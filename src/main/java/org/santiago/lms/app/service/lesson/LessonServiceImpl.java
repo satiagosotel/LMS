@@ -3,6 +3,8 @@ package org.santiago.lms.app.service.lesson;
 import org.santiago.lms.app.exception.LMSException;
 import org.santiago.lms.app.models.Lesson;
 import org.santiago.lms.app.repository.LessonRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +19,15 @@ public class LessonServiceImpl implements LessonService {
 
     public LessonServiceImpl(LessonRepository lessonRepository) {
         this.lessonRepository = lessonRepository;
+    }
+
+    @Override
+    public Page<Lesson> findAll(Pageable pageable) {
+        Page<Lesson> lessons = lessonRepository.findAll(pageable);
+        if (lessons.isEmpty()) {
+            throw new LMSException(LECCIONES_VACIAS, NOT_FOUND);
+        }
+        return lessons;
     }
 
     @Override

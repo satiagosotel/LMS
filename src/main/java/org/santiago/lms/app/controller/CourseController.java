@@ -2,13 +2,14 @@ package org.santiago.lms.app.controller;
 
 import org.santiago.lms.app.dto.request.CourseRequest;
 import org.santiago.lms.app.dto.response.ApiResponse;
+import org.santiago.lms.app.dto.response.CourseResponse;
 import org.santiago.lms.app.models.Course;
 import org.santiago.lms.app.service.course.CoursesService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -21,14 +22,14 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Course>>> getAllCourses() {
-        List<Course> courses = coursesService.findAll();
+    public ResponseEntity<ApiResponse<Page<Course>>> getAllCourses(Pageable pageable) {
+        Page<Course> courses = coursesService.findAll(pageable);
         return ResponseEntity.ok(ApiResponse.success(courses));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Course>> getById(@PathVariable Long id) {
-        Course course = coursesService.findById(id).orElseThrow();
+    public ResponseEntity<ApiResponse<CourseResponse>> getById(@PathVariable Long id, Pageable pageable) {
+        CourseResponse course = coursesService.findByIdWithPaginatedLessons(id, pageable);
         return ResponseEntity.ok(ApiResponse.success(course));
     }
 

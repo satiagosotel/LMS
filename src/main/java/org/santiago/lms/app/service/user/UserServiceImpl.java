@@ -6,6 +6,9 @@ import org.santiago.lms.app.exception.LMSException;
 import org.santiago.lms.app.models.User;
 import org.santiago.lms.app.repository.UserRepository;
 import static org.springframework.http.HttpStatus.*;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,24 +35,13 @@ public class UserServiceImpl implements UserService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<UserResponse> findAll()  {
-        List<User> users = (List<User>) this.userRepository.findAll();
+    public Page<User> findAll(Pageable pageable)  {
+        Page<User> users = this.userRepository.findAll(pageable);
         if(users.isEmpty()){
             throw new LMSException("", NOT_FOUND);
         }
 
-        List<UserResponse> usersResponse = new ArrayList<>();
-        for (User user : users) {
-            usersResponse.add(new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEnabled(),
-                user.getEmail(),
-                user.getRoles()
-            ));
-        }
-
-        return usersResponse;
+        return users;
     }
 
     /*

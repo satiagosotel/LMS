@@ -6,9 +6,11 @@ import org.santiago.lms.app.models.Course;
 import org.santiago.lms.app.models.Lesson;
 import org.santiago.lms.app.service.course.CoursesService;
 import org.santiago.lms.app.service.lesson.LessonService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -25,8 +27,8 @@ public class LessonController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Lesson>>> getAllLessons() {
-        List<Lesson> lessons = lessonService.findAll();
+    public ResponseEntity<ApiResponse<Page<Lesson>>> getAllLessons(Pageable pageable) {
+        Page<Lesson> lessons = lessonService.findAll(pageable);
         return ResponseEntity.ok(ApiResponse.success(lessons));
     }
 

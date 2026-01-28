@@ -1,8 +1,13 @@
 package org.santiago.lms.app.service.course;
 
+import org.santiago.lms.app.dto.response.CourseResponse;
 import org.santiago.lms.app.exception.LMSException;
 import org.santiago.lms.app.models.Course;
+import org.santiago.lms.app.models.Lesson;
 import org.santiago.lms.app.repository.CourseRepository;
+import org.santiago.lms.app.repository.LessonRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,13 +19,23 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Service
 public class CoursesServiceImpl implements CoursesService {
     private final CourseRepository courseRepository;
+    private final LessonRepository lessonRepository;
 
-    public CoursesServiceImpl(CourseRepository courseRepository) {
+    public CoursesServiceImpl(CourseRepository courseRepository, LessonRepository lessonRepository) {
         this.courseRepository = courseRepository;
+        this.lessonRepository = lessonRepository;
     }
 
     public List<Course> findAll() {
         List<Course> courses = this.courseRepository.findByActiveTrue();
+        if(courses.isEmpty()){
+            throw new LMSException(CURSOS_VACIOS, NOT_FOUND);
+        }
+        return courses;
+    }
+
+    public Page<Course> findAll(Pageable pageable) {
+        Page<Course> courses = this.courseRepository.findByActiveTrue(pageable);
         if(courses.isEmpty()){
             throw new LMSException(CURSOS_VACIOS, NOT_FOUND);
         }
@@ -54,5 +69,20 @@ public class CoursesServiceImpl implements CoursesService {
         courseRepository.deleteById(id);
     }
 
+    public CourseResponse findByIdWithPaginatedLessons(Long id, Pageable pageable) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new LMSException(CURSO_NO_EXISTE, NOT_FOUND));
 
+        Page<Lesson> lessons = lessonRepository.findByCourseIdOrderByOrderIndexAsc(id, pageable);
+
+        CourseResponse response = new CourseResponse();
+        response.setId(course.getId());
+        response.setTitle(course.getTitle());
+        response.setDescription(course.getDescription());
+        response.setLessons(lessons);
+        response.setCreatedAt(course.getCreatedAt());
+        response.setUpdatedAt(course.getUpdatedAt());
+
+        return response;
+    }
 }
